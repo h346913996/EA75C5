@@ -1,0 +1,40 @@
+server:
+  port: 18991
+
+extends:
+  url: /getAdmin
+  serverName: MICSERVICETEST
+
+spring:
+  application:
+    name: MicServiceTest2
+
+info:
+  app:
+    name: ${spring.application.name}
+    version: 1.0.0
+    time: 2018年03月15日 14:39:05
+  describe: 微服务Demo测试
+  home: /
+  author: Claude....................
+  licensed: MIT Licensed
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    hostname: ${spring.application.name}
+    health-check-url-path: acutator/info
+  client:
+    healthcheck:
+      enable: true
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+hystrix:
+  command:
+      default:
+        execution:
+          isolation:
+            thread:
+              timeoutInMilliseconds: 60000
