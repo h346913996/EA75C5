@@ -1,22 +1,30 @@
-server:
-  port: 18991
+excuteSql:
+  allowOrigin: 1
+  querySql: SELECT PLSQL FROM META836 WHERE GUID = ?
+  charset: gbk
+  columnTypeName: BYTEA
+  successMessage: 操作成功！-  for postgresql v1.0
 
-extends:
-  url: /getAdmin
-  serverName: MICSERVICETEST
+server:
+  port: 8080
 
 spring:
   application:
-    name: MicServiceTest2
+    name: AICoder for PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/DB_TEST1
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
 
 info:
   app:
     name: ${spring.application.name}
     version: 1.0.0
-    time: 2018年03月15日 14:39:05
-  describe: 微服务Demo测试
+    time: 2018年06月04日 16:06:05
+  describe: AICoder for PostgreSQL
   home: /
-  author: Claude....................
+  author: Claude
   licensed: MIT Licensed
 
 eureka:
@@ -30,11 +38,3 @@ eureka:
       enable: true
     serviceUrl:
       defaultZone: http://127.0.0.1:8761/eureka
-
-hystrix:
-  command:
-      default:
-        execution:
-          isolation:
-            thread:
-              timeoutInMilliseconds: 60000

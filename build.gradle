@@ -40,8 +40,10 @@ jar {
 dependencies {
 	compile group: 'com.google.guava', name: 'guava', version: '24.0-jre' // google 工具包
 	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix' // hystrix component
+	compile "org.postgresql:postgresql:9.4-1201-jdbc41"
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client') // eureka clien
 	testCompile('org.springframework.boot:spring-boot-starter-test')
