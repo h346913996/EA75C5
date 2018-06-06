@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -30,7 +31,12 @@ public class PostgreSqlDAO implements DataAccessObjects {
     @Override
     public String query(String sql,String param) {
         String[] strArr = {param};
-        String result = jdbcTemplate.queryForObject(sql,strArr,String.class);
+        String result = null;
+        try {
+            result = jdbcTemplate.queryForObject(sql, strArr, String.class);
+        } catch(EmptyResultDataAccessException e){
+            throw new RuntimeException("查无结果，请检查参数 - GUID："+param);
+        }
         return result;
     }
 

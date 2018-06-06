@@ -1,7 +1,6 @@
 package com.example.MicServices_2.routes.aicoder;
 
 import com.example.MicServices_2.domain.QueryResult;
-import com.example.MicServices_2.exception.JdbcRuntimeException;
 import com.example.MicServices_2.service.ExcuteSqlService;
 import com.example.MicServices_2.util.Util;
 import org.slf4j.Logger;
@@ -78,12 +77,22 @@ public class MetaController implements Serializable {
                 }
                 results.put("Tables", result); // 放入结果存储对象
             } else if ("2".equals(mode)) { // 批量操作模式
-                result = excuteSqlService.excuteSql(sql, values.split(divide)); // 传入dao执行
+                if (Util.validate(values) && !"0".equals(values)) {
+                    if (Util.validate(divide)) {
+                        excuteSqlService.excuteSql(sql, values.split(divide)); // 有参数进行分割传入
+                    } else {
+                        String[] strArr = {values};
+                        excuteSqlService.excuteSql(sql, strArr); // 无分割字符，将传入参数看作一个
+                    }
+                } else {
+                    excuteSqlService.excuteSql(sql, null); // 无参数直接传null
+                }
             }
             qrs.setCode(1); // 操作成功代码
             qrs.setMsg(successMessage); // 操作成功信息
         } catch(Exception e) {
-            qrs.setMsg(e.getMessage()); // 将异常信息写入要返回的结果码里
+            e.printStackTrace();
+            qrs.setMsg(e.toString()); // 将异常信息写入要返回的结果码里
         }
         finally {
             return results;

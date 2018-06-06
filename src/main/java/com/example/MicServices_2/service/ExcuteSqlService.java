@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ExcuteSqlService {
@@ -38,14 +37,21 @@ public class ExcuteSqlService {
 
         tables[1] = dao.excuteSqlSearch(sql);
 
-        int pageSizeInt = Integer.parseInt(pageSize); // 转换参数
-        int pageIndexInt = Integer.parseInt(pageIndex); // 转换参数
+        int pageSizeInt = 0;
+        int pageIndexInt = 0;
+        try {
+            pageSizeInt = Integer.parseInt(pageSize); // 转换参数
+            pageIndexInt = Integer.parseInt(pageIndex); // 转换参数
+        } catch(NumberFormatException e) {
+            throw new RuntimeException("非法参数，请检查参数 - pageSize："+pageSize+" - pageIndex："+pageIndex);
+        }
+
         int front = ((pageIndexInt - 1) * pageSizeInt) + 1; // 从第几条开始属于查询内容
         int behind = (pageSizeInt * pageIndexInt); // 到第几条结束
 
         int sum = tables[1].getRecords().size(); // 获取总记录数目
         if(front>sum){
-            tables[1].setRecords(null); // 超出，无内容
+            throw new RuntimeException("查无结果，请检查参数 - pageSize："+pageSize+" - pageIndex："+pageIndex);
         } else if(behind>sum) {
             behind = sum;
         }
@@ -67,10 +73,10 @@ public class ExcuteSqlService {
     public boolean excuteSql( String sql,String[] values){
         sql = Util.stitchingStatement(sql, values); // 拼接sql语句
         int row = dao.excuteSql(sql);//执行
-        if( row > 0 ){ // 判断受影响
-            return true;
+        if( row <= 0 ){ // 判断受影响
+            throw new RuntimeException("语句成功执行，但受影响行数为0，数据并未发生改变。");
         }
-        return false;
+        return true;
     }
 
 }
